@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -19,16 +20,17 @@ class MessageSent implements ShouldBroadcast
      */
     public function __construct(
         public string $message,
+        public User $user
     )
     {}
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return Channel
+     * @return PresenceChannel
      */
-    public function broadcastOn(): Channel
+    public function broadcastOn(): PresenceChannel
     {
-        return new Channel('chunnell');
+        return new PresenceChannel('messagechannel');
     }
 }
