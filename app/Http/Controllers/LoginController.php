@@ -26,12 +26,12 @@ class LoginController extends Controller
     {
         $request->validate(
             [
-                'login' => 'required',
+                'name' => 'required',
                 'password' => 'required'
             ]
         );
 
-        if (!empty($u = DB::table('users')->where('name', $request->input('login'))->first())
+        if (!empty($u = DB::table('users')->where('name', $request->input('name'))->first())
             && md5($request->input('password')) == $u->password)
         {
             $payload = [

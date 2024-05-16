@@ -30,5 +30,5 @@ Route::name('points.')->prefix('point')->group(function () {
 
 Route::get('testingg', function (Request $request) {
     $p = Broadcast::pusher(app()['config']['broadcasting.connections.reverb']);
-    dd($p->getPresenceUsers('presence-chechen'));
+    dd($p->getPresenceUsers('presence-messagechannel'));
 });
