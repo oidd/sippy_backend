@@ -31,6 +31,17 @@ class PointController extends Controller
 
     public function show(int $id, Request $request)
     {
-        return Point::findOrFail($id);
+        $point = Point::findOrFail($id);
+
+        return response()->json(
+            [
+                'longitude' => DB::select('select ST_X(?)', [$point->geom])[0]->st_x,
+                'latitude' => DB::select('select ST_Y(?)', [$point->geom])[0]->st_y,
+                'is_house' => $point->is_house,
+                'chunk_id' => $point->chunk_id,
+                'user_id' => $point->user_id,
+                'id' => $point->id,
+            ]
+        );
     }
 }
