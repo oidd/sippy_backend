@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('point_id');
             $table->date('decision')->nullable();
             $table->boolean('approve')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('point_id')->references('id')->on('points');
         });
     }
 
