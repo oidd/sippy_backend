@@ -15,7 +15,7 @@ class LoginController extends Controller
     {
         $inp = $request->validate([
             'name' => 'required|string',
-            'email' => 'required|string',
+            'email' => 'required|string|email|unique:users',
             'password' => 'required|string'
         ]);
 

@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('points', function (Blueprint $table) {
+        Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('chunk_id');
             $table->unsignedBigInteger('user_id');
-            $table->addColumn('GEOMETRY_POINT', 'geom');
-            $table->boolean('is_house');
+            $table->unsignedBigInteger('user_id');
+            $table->date('decision')->nullable();
+            $table->boolean('approve')->nullable();
             $table->timestamps();
-
-            $table->foreign('chunk_id')->references('id')->on('chunks');
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('requests');
     }
 };
