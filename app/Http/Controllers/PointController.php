@@ -29,14 +29,8 @@ class PointController extends Controller
         return $point;
     }
 
-    public function show(Request $request)
+    public function show(int $id, Request $request)
     {
-        $inp = $request->validate(
-            [
-                'point_id' => 'required|integer',
-            ]
-        );
-
-        return Point::find(['id' => $inp['point_id']]);
+        return Point::findOrFail($id);
     }
 }

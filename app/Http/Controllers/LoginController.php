@@ -16,10 +16,18 @@ class LoginController extends Controller
         $inp = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'gender' => 'required|boolean',
+            'age' => 'required|integer|between:16,100',
         ]);
 
-        return response()->json(User::create($inp));
+        return response()->json(User::create([
+            'name' => $inp['name'],
+            'email' => $inp['email'],
+            'password' => md5($inp['password']),
+            'gender' => $inp['gender'],
+            'age' => $inp['age'],
+        ]));
     }
 
     public function login(Request $request)

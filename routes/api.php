@@ -25,7 +25,8 @@ Route::post('sendMessage', function (Request $request) {
 })->middleware(['auth:api']);
 
 Route::name('points.')->prefix('point')->group(function () {
-    Route::post('/', [PointController::class, 'store'])->name('store');
+    Route::post('/', [PointController::class, 'store']);
+    Route::get('/{id}', [PointController::class, 'show']);
 });
 
 Route::get('testingg', function (Request $request) {
