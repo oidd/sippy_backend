@@ -50,6 +50,24 @@ class Point extends Model
         return $this->hasOne(Points_description::class);
     }
 
+    public function shouldShowToUser(User $user): bool
+    {
+        $description = $this->description()->first();
+
+//        dump([$description, $user]);
+
+        if (($description->preferable_gender !== null) && ($user->gender != $description->preferable_gender))
+            return false;
+
+        if (($description->min_preferable_age !== null) && ($user->age < $description->min_preferable_age))
+            return false;
+
+        if (($description->max_preferable_age !== null) && ($user->age > $description->max_preferable_age))
+            return false;
+
+        return true;
+    }
+
 //    public function broadcastOn(string $event): array
 //    {
 //        return

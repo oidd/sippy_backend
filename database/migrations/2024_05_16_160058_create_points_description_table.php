@@ -20,7 +20,7 @@ return new class extends Migration
             $table->smallInteger('min_preferable_age')->nullable();
             $table->smallInteger('max_preferable_age')->nullable();
 
-            $table->foreign('point_id')->references('id')->on('points');
+            $table->foreign('point_id')->references('id')->on('points')->onDelete('cascade');
         });
 
         DB::statement('ALTER TABLE points_description

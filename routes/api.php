@@ -24,10 +24,18 @@ Route::post('sendMessage', function (Request $request) {
 
 })->middleware(['auth:api']);
 
-Route::name('points.')->prefix('point')->group(function () {
+Route::prefix('point')->middleware('auth:api')->group(function () {
     Route::post('/', [PointController::class, 'store']);
-    Route::post('/nearest', [PointController::class, 'getNearPoints']);
-    Route::get('/{id}', [PointController::class, 'show']);
+    Route::get('/{id}', [PointController::class, 'showPoint']);
+    Route::put('/{id}', [PointController::class, 'updatePoint']);
+    Route::delete('/{id}', [PointController::class, 'destroy']);
+
+    Route::post('/nearest', [PointController::class, 'showNearPoints']);
+
+    Route::prefix('/description')->group(function () {
+        Route::get('/description/{id}', [PointController::class, 'showDescription']);
+        Route::put('/description/{id}', [PointController::class, 'updatePointDescription']);
+    });
 });
 
 Route::get('testingg', function (Request $request) {

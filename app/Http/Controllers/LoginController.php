@@ -19,6 +19,8 @@ class LoginController extends Controller
             'password' => 'required|string',
             'gender' => 'required|boolean',
             'age' => 'required|integer|between:16,100',
+            'about_me' => 'string',
+            'avatar' => 'string'
         ]);
 
         return response()->json(User::create([
@@ -27,6 +29,8 @@ class LoginController extends Controller
             'password' => md5($inp['password']),
             'gender' => $inp['gender'],
             'age' => $inp['age'],
+            'about_me' => $inp['about_me'] ?? null,
+            'avatar' => $inp['avatar'] ?? null,
         ]));
     }
 
@@ -48,16 +52,6 @@ class LoginController extends Controller
 
             return response()->json(JWT::encode($payload, env('AUTH_JWT_SECRET_KEY'), 'HS256'));
         }
-
-//
-//        if (($u = User::find(['name' => $request->input('login')]))->password
-//                == md5($request->input('password'))) {
-//            $payload = [
-//                'user_id' => $u->id,
-//            ];
-//
-//            return response()->json(JWT::encode($payload, env('AUTH_JWT_SECRET_KEY'), 'HS256'));
-//        }
 
         return response()->json(['error' => 'Bad login'], 401);
     }

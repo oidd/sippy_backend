@@ -12,22 +12,16 @@ class Points_description extends Model
 
     protected $table = 'points_description';
 
+    protected $fillable = [
+        'point_id',
+        'preferable_gender',
+        'starts_at',
+        'min_preferable_age',
+        'max_preferable_age',
+    ];
+
     public function point(): BelongsTo
     {
         return $this->belongsTo(Point::class);
-    }
-
-    public function shouldShowToUser(User $user): bool
-    {
-        if (($this->preferrable != null) && ($user->gender != $this->preferrable))
-            return false;
-
-        if (($this->min_preferable_age != null) && ($user->age < $this->min_preferable_age))
-            return false;
-
-        if (($this->max_preferable_age != null) && ($user->age > $this->max_preferable_age))
-            return false;
-
-        return true;
     }
 }
