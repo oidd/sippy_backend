@@ -26,6 +26,7 @@ Route::post('sendMessage', function (Request $request) {
 
 Route::name('points.')->prefix('point')->group(function () {
     Route::post('/', [PointController::class, 'store']);
+    Route::post('/nearest', [PointController::class, 'getNearPoints']);
     Route::get('/{id}', [PointController::class, 'show']);
 });
 

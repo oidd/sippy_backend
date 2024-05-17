@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chunk;
 use App\Models\Point;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,17 +32,51 @@ class PointController extends Controller
 
     public function show(int $id, Request $request)
     {
-        $point = Point::findOrFail($id);
+        return Point::findOrFail($id);
+    }
 
-        return response()->json(
+    public function getNearPoints(Request $request)
+    {
+        $inp = $request->validate(
             [
-                'longitude' => DB::select('select ST_X(?)', [$point->geom])[0]->st_x,
-                'latitude' => DB::select('select ST_Y(?)', [$point->geom])[0]->st_y,
-                'is_house' => $point->is_house,
-                'chunk_id' => $point->chunk_id,
-                'user_id' => $point->user_id,
-                'id' => $point->id,
+                'latitude' => 'required|string',
+                'longitude' => 'required|string',
             ]
         );
+
+        $curChunk = Chunk::getChunkByCoordinates($inp['longitude'], $inp['latitude']);
+
+        $transitions = [
+            [0, 0],
+            [0.45,  0],
+            [0, 0.45],
+            [-0.45,  0],
+            [0, -0.45],
+            [0.45, 0.45],
+            [0.45, -0.45],
+            [-0.45, 0.45],
+            [-0.45, -0.45],
+        ];
+
+        foreach ($transitions as $transition) {
+            $nearestChunksIds[] = DB::select('SELECT id
+            FROM chunks
+            WHERE ST_Intersects(ST_Translate(ST_SetSRID(ST_MakePoint(?, ?), 4326), ?, ?), chunks.geom)
+            ', [$inp['longitude'], $inp['latitude'], $transition[0], $transition[1]])[0]->id;
+        }
+
+        $points = [];
+
+        foreach ($nearestChunksIds as $nearestChunkId) {
+            try {
+                $points = array_merge($points, Chunk::findOrFail($nearestChunkId)->points()->get()->toArray());
+            } catch (ModelNotFoundException $exception)
+            {
+                continue;
+            }
+
+        }
+
+        return response()->json($points);
     }
 }

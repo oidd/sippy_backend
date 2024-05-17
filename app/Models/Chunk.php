@@ -16,11 +16,11 @@ class Chunk extends Model
         return $this->hasMany(Point::class);
     }
 
-    public static function getChunkByCoordinates(string $x, string $y)
+    public static function getChunkByCoordinates(string $longitude, string $latitude)
     {
         return DB::select(
             'SELECT chunks.id as id
         FROM chunks
-        WHERE ST_Intersects(chunks.geom, ST_SetSRID(ST_MakePoint(?, ?), 4326));', [$x, $y])[0]->id;
+        WHERE ST_Intersects(chunks.geom, ST_SetSRID(ST_MakePoint(?, ?), 4326));', [$longitude, $latitude])[0]->id;
     }
 }
