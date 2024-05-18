@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PointController;
+use App\Http\Controllers\RequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -27,15 +28,20 @@ Route::post('sendMessage', function (Request $request) {
 Route::prefix('point')->middleware('auth:api')->group(function () {
     Route::post('/', [PointController::class, 'store']);
     Route::get('/{id}', [PointController::class, 'showPoint']);
-    Route::put('/{id}', [PointController::class, 'updatePoint']);
+    Route::patch('/{id}', [PointController::class, 'updatePoint']);
     Route::delete('/{id}', [PointController::class, 'destroy']);
 
     Route::post('/nearest', [PointController::class, 'showNearPoints']);
 
     Route::prefix('/description')->group(function () {
-        Route::get('/description/{id}', [PointController::class, 'showDescription']);
-        Route::put('/description/{id}', [PointController::class, 'updatePointDescription']);
+        Route::get('/{id}', [PointController::class, 'showDescription']);
+        Route::patch('/{id}', [PointController::class, 'updatePointDescription']);
     });
+});
+
+Route::prefix('request')->middleware('auth:api')->group(function () {
+    Route::post('/send', [RequestController::class, 'sendRequest']);
+
 });
 
 Route::get('testingg', function (Request $request) {

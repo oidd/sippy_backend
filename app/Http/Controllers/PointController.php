@@ -56,23 +56,34 @@ class PointController extends Controller
 
     public function updatePoint(int $id, Request $request)
     {
-        Gate::authorize('update', Point::class);
-
         $inp = $request->validate(
             [
                 'latitude' => 'nullable|string',
                 'longitude' => 'nullable|string',
-                'max_preferable_age' => 'nullable|boolean',
+                'is_house' => 'nullable|boolean',
             ]
         );
 
-        return Point::where('id', $id)->update($inp);
+        Gate::authorize('update', $p = Point::findOrFail($id));
+
+        if (isset($inp['longitude']) || isset($inp['latitude']))
+        {
+            $inp['geom'] = DB::select("SELECT ST_SetSRID(ST_MakePoint(?, ?), 4326)", [$inp['latitude'] ?? $p->latitude, $inp['longitude'] ?? $p->longitude])[0]->st_setsrid;
+            unset($inp['latitude'], $inp['longitude']);
+        }
+
+        Point::where('id', $id)->update($inp);
+        $p = Point::find($id);
+
+        $p->chunk_id = Chunk::getChunkByCoordinates($p->longitude, $p->latitude);
+
+        $p->save();
+
+        return response()->json($p);
     }
 
     public function updatePointDescription(int $id, Request $request)
     {
-        Gate::authorize('update', Point::class);
-
         $inp = $request->validate(
             [
                 'preferable_gender' => 'nullable|boolean',
@@ -82,19 +93,24 @@ class PointController extends Controller
             ]
         );
 
-        return Points_description::where('user_id', $id)->update($inp);
+        Gate::authorize('update', Point::find($id));
+
+        ($p = Points_description::where('point_id', $id))->update($inp);
+        return response()->json($p->get());
     }
 
     public function showPoint(int $id, Request $request)
     {
-        Gate::authorize('show', Point::class);
+        Gate::authorize('read', Point::findOrFail($id));
 
         return Point::findOrFail($id);
     }
 
     public function showDescription(int $id, Request $request)
     {
-        Gate::authorize('show', Point::class);
+//        dd([$request->user(), Point::findOrFail($id)->with('description')->get()]);
+
+        Gate::authorize('read', Point::findOrFail($id));
 
         return Points_description::where('point_id', $id)->first();
     }
@@ -148,7 +164,7 @@ class PointController extends Controller
 
     public function destroy($id, Request $request)
     {
-        Gate::authorize('delete', Point::class);
+        Gate::authorize('delete', Point::findOrFail($id));
 
         return Point::destroy($id);
     }

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class Point extends Model
 {
-    use HasFactory, BroadcastsEvents;
+    use HasFactory;
 
     protected $fillable = [
         'geom',
@@ -53,6 +53,9 @@ class Point extends Model
     public function shouldShowToUser(User $user): bool
     {
         $description = $this->description()->first();
+
+        if ($this->user_id === $user->id)
+            return true;
 
 //        dump([$description, $user]);
 
