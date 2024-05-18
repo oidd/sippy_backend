@@ -18,6 +18,6 @@ class RequestPolicy
 
     public function decideRequest(User $user, Request $request)
     {
-        return $user->id === $request->point()->get()->user_id;
+        return $user->id === $request->point()->get()->first()->user_id;
     }
 }

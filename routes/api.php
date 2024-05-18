@@ -41,7 +41,10 @@ Route::prefix('point')->middleware('auth:api')->group(function () {
 
 Route::prefix('request')->middleware('auth:api')->group(function () {
     Route::post('/send', [RequestController::class, 'sendRequest']);
-
+    Route::get('/approve/{id}', [RequestController::class, 'approveRequest']);
+    Route::get('/decline/{id}', [RequestController::class, 'declineRequest']);
+    Route::get('/received', [RequestController::class, 'showRequestsForMe']);
+    Route::get('/sent', [RequestController::class, 'showMyRequests']);
 });
 
 Route::get('testingg', function (Request $request) {

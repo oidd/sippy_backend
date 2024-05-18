@@ -18,7 +18,7 @@ class RequestController extends Controller
             ]
         );
 
-//        Gate::authorize('sendRequest', Point::findOrFail($inp['point_id']));
+        Gate::authorize('sendRequest', Point::findOrFail($inp['point_id']));
 
         return \App\Models\Request::create([
             'point_id' => $inp['point_id'],
@@ -32,11 +32,11 @@ class RequestController extends Controller
 
         Gate::authorize('decideRequest', $req);
 
-        if ($req->decided !== null)
-            return response()->json('Request already decided', 400);
+        if ($req->decision !== null)
+            return response()->json('Request already decided as rejected.', 400);
 
         $req->approve = true;
-        $req->decided = Date::now();
+        $req->decision = Date::now();
 
         $req->save();
 
@@ -50,7 +50,7 @@ class RequestController extends Controller
         Gate::authorize('decideRequest', $req);
 
         $req->approve = false;
-        $req->decided = Date::now();
+        $req->decision = Date::now();
 
         $req->save();
 
@@ -64,12 +64,6 @@ class RequestController extends Controller
 
     public function showRequestsForMe(Request $request)
     {
-        $reqs = [];
-
-        foreach ($request->user()->points()->get() as $point) {
-            $reqs[] = \App\Models\Request::where('point_id', $point->id)->get();
-        }
-
-        return $reqs;
+        return \App\Models\Request::where('point_id', $request->user()->point()->get()[0]->id)->get();
     }
 }
