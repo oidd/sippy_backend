@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('points', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('chunk_id');
             $table->unsignedBigInteger('user_id');
-            $table->addColumn('GEOMETRY_POINT', 'geom');
-            $table->string('category_id');
+            $table->string('message');
             $table->timestamps();
 
-            $table->foreign('chunk_id')->references('id')->on('chunks');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('category_id')->references('id')->on('category');
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('notifications');
     }
 };

@@ -18,9 +18,9 @@ class PointController extends Controller
             [
                 'latitude' => 'required|string',
                 'longitude' => 'required|string',
-                'is_house' => 'required|boolean',
+                'category_id' => 'required|string|in:pubs,at_home,cinema,sabantui',
                 'preferable_gender' => 'boolean',
-                'starts_at' => 'date',
+                'starts_at' => 'integer',
                 'min_preferable_age' => 'integer|between:16,100',
                 'max_preferable_age' => 'integer|between:16,100',
             ]
@@ -31,7 +31,7 @@ class PointController extends Controller
         try {
             $point = Point::create([
                 'geom' => DB::select("SELECT ST_SetSRID(ST_MakePoint(?, ?), 4326)", [$inp['latitude'], $inp['longitude']])[0]->st_setsrid,
-                'is_house' => $inp['is_house'],
+                'category_id' => $inp['category_id'],
                 'chunk_id' => Chunk::getChunkByCoordinates($inp['latitude'], $inp['longitude']),
                 'user_id' => $request->user()->id,
             ]);
@@ -60,7 +60,7 @@ class PointController extends Controller
             [
                 'latitude' => 'nullable|string',
                 'longitude' => 'nullable|string',
-                'is_house' => 'nullable|boolean',
+                'category_id' => 'nullable|string|in:pubs,at_home,cinema,sabantui',
             ]
         );
 
@@ -87,7 +87,7 @@ class PointController extends Controller
         $inp = $request->validate(
             [
                 'preferable_gender' => 'nullable|boolean',
-                'starts_at' => 'nullable|date',
+                'starts_at' => 'nullable|integer',
                 'max_preferable_age' => 'nullable|integer|between:16,100',
                 'min_preferable_age' => 'nullable|integer|between:16,100',
             ]
@@ -137,10 +137,7 @@ class PointController extends Controller
         ];
 
         foreach ($transitions as $transition) {
-            $nearestChunksIds[] = DB::select('SELECT id
-            FROM chunks
-            WHERE ST_Intersects(ST_Translate(ST_SetSRID(ST_MakePoint(?, ?), 4326), ?, ?), chunks.geom)
-            ', [$inp['longitude'], $inp['latitude'], $transition[0], $transition[1]])[0]->id;
+            $nearestChunksIds[] = DB::select('SELECT id FROM chunks WHERE ST_Intersects(ST_Translate(ST_SetSRID(ST_MakePoint(?, ?), 4326), ?, ?), chunks.geom)', [$inp['longitude'], $inp['latitude'], $transition[0], $transition[1]])[0]->id;
         }
 
         $points = [];

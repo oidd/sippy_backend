@@ -15,7 +15,7 @@ class Point extends Model
 
     protected $fillable = [
         'geom',
-        'is_house',
+        'category_id',
         'user_id',
         'chunk_id'
     ];

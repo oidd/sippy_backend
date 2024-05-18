@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('point_id');
-            $table->date('decision')->nullable()->default(null);
+            $table->unsignedBigInteger('decision')->nullable()->default(null);
             $table->boolean('approve')->nullable()->default(null);
             $table->timestamps();
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PointController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -12,18 +13,18 @@ Route::name('auth.')->group(function () {
     Route::post('registration', [LoginController::class, 'register'])->name('registration');
 });
 
-Route::post('sendMessage', function (Request $request) {
-    $request->validate(
-        [
-            'message' => 'required',
-        ]
-    );
-
-    \App\Events\MessageSent::dispatch($request->input('message'), $request->user());
-
-    return response()->json('check chat to know if message sent', 200);
-
-})->middleware(['auth:api']);
+//Route::post('sendMessage', function (Request $request) {
+//    $request->validate(
+//        [
+//            'message' => 'required',
+//        ]
+//    );
+//
+//    \App\Events\MessageSent::dispatch($request->input('message'), $request->user());
+//
+//    return response()->json('check chat to know if message sent', 200);
+//
+//})->middleware(['auth:api']);
 
 Route::prefix('point')->middleware('auth:api')->group(function () {
     Route::post('/', [PointController::class, 'store']);
@@ -47,7 +48,12 @@ Route::prefix('request')->middleware('auth:api')->group(function () {
     Route::get('/sent', [RequestController::class, 'showMyRequests']);
 });
 
-Route::get('testingg', function (Request $request) {
-    $p = Broadcast::pusher(app()['config']['broadcasting.connections.reverb']);
-    dd($p->getPresenceUsers('presence-messagechannel'));
+Route::prefix('user')->middleware('auth:api')->group(function () {
+    Route::get('/', [ProfileController::class, 'getMyProfile']);
+    Route::get('/{id}', [ProfileController::class, 'getProfile']);
 });
+//
+//Route::get('testingg', function (Request $request) {
+//    $p = Broadcast::pusher(app()['config']['broadcasting.connections.reverb']);
+//    dd($p->getPresenceUsers('presence-messagechannel'));
+//});

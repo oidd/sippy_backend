@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Point;
+use App\Models\Request;
+use App\Models\User;
 use Illuminate\Database\Schema\Grammars\Grammar;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Gate;
@@ -29,11 +32,15 @@ class AppServiceProvider extends ServiceProvider
             return 'GEOMETRY(POLYGON, 4326)';
         });
 
-        Gate::define('send-request', function (\App\Models\User $user, \App\Models\Point $point) {
+        Gate::define('send-request', function (User $user, Point $point) {
             if ($user->id === $point->user_id)
                 return false;
 
             return $point->shouldShowToUser($user);
+        });
+
+        Gate::define('decide-request', function (User $user, Request $request) {
+            return $user->id === $request->point()->get()->first()->user_id;
         });
     }
 }

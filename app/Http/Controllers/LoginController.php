@@ -20,8 +20,7 @@ class LoginController extends Controller
             'password' => 'required|string',
             'gender' => 'required|boolean',
             'age' => 'required|integer|between:16,100',
-            'about_me' => 'string',
-            'avatar' => 'string'
+            'about_me' => 'string'
         ]);
 
         return response()->json(User::create([
@@ -31,7 +30,6 @@ class LoginController extends Controller
             'gender' => $inp['gender'],
             'age' => $inp['age'],
             'about_me' => $inp['about_me'] ?? null,
-            'avatar' => $inp['avatar'] ?? null,
         ]));
     }
 
@@ -39,12 +37,12 @@ class LoginController extends Controller
     {
         $request->validate(
             [
-                'name' => 'required',
+                'email' => 'required|email',
                 'password' => 'required'
             ]
         );
 
-        if (!empty($u = DB::table('users')->where('name', $request->input('name'))->first())
+        if (!empty($u = DB::table('users')->where('email', $request->input('email'))->first())
             && md5($request->input('password')) == $u->password)
         {
             $payload = [
