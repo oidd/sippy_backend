@@ -15,7 +15,7 @@ class LoginController extends Controller
     public function register(Request $request)
     {
         $inp = $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|unique:users',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
             'gender' => 'required|boolean',
