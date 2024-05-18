@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Firebase\JWT\JWT;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -53,6 +54,11 @@ class LoginController extends Controller
             return response()->json(JWT::encode($payload, env('AUTH_JWT_SECRET_KEY'), 'HS256'));
         }
 
-        return response()->json(['error' => 'Bad login'], 401);
+        return response()->json(
+            [
+                'message' => 'bad login',
+                'errors' => ['login' => ['password and login doesn\'t match']]
+            ]
+        );
     }
 }
