@@ -18,7 +18,10 @@ class RequestController extends Controller
             ]
         );
 
-        Gate::authorize('sendRequest', Point::findOrFail($inp['point_id']));
+        if (!Gate::allows('send-request', Point::findOrFail($inp['point_id'])))
+            return response()->json('unauthorized', 401);
+
+        //Gate::authorize('sendRequest', Point::findOrFail($inp['point_id']));
 
         return \App\Models\Request::create([
             'point_id' => $inp['point_id'],
