@@ -51,10 +51,10 @@ class RequestController extends Controller
 
         $reqs = \App\Models\Request::where('id', $req->id)->get();
 
-        foreach ($reqs as $req) {
-            $req->approve = false;
-            $
-        }
+//        foreach ($reqs as $req) {
+//            $req->approve = false;
+//            $
+//        }
 
         return $req;
     }
