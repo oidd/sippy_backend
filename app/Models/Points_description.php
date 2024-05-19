@@ -18,6 +18,8 @@ class Points_description extends Model
         'starts_at',
         'min_preferable_age',
         'max_preferable_age',
+        'name',
+        'description',
     ];
 
     public function point(): BelongsTo

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -16,4 +17,25 @@ class ProfileController extends Controller
     {
         return User::find($id);
     }
+
+    public function updateMyProfile(Request $request)
+    {
+        $inp = $request->validate([
+            'name' => 'string',
+            'about_me' => 'nullable|string'
+        ]);
+
+        $request->user()->update($inp);
+
+        return $request->user();
+    }
+
+//    public function updateProfileAvatar(Request $request)
+//    {
+//        $inp = $request->validate([
+//            'photo' => 'file|required'
+//        ]);
+//
+//        Storage::disk('local')->put('avatars/' . $request->user()->id . '.jpg', $inp);
+//    }
 }

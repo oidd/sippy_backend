@@ -19,6 +19,8 @@ class PointController extends Controller
                 'latitude' => 'required|string',
                 'longitude' => 'required|string',
                 'category_id' => 'required|string|in:pubs,at_home,cinema,sabantui',
+                'name' => 'required|string',
+                'description' => 'string',
                 'preferable_gender' => 'boolean',
                 'starts_at' => 'integer',
                 'min_preferable_age' => 'integer|between:16,100',
@@ -42,6 +44,8 @@ class PointController extends Controller
                 'starts_at' => $inp['starts_at'] ?? null,
                 'max_preferable_age' => $inp['max_preferable_age'] ?? null,
                 'min_preferable_age' => $inp['min_preferable_age'] ?? null,
+                'description' => $inp['description'] ?? null,
+                'name' => $inp['name'],
             ]);
 
             DB::commit();
@@ -90,6 +94,8 @@ class PointController extends Controller
                 'starts_at' => 'nullable|integer',
                 'max_preferable_age' => 'nullable|integer|between:16,100',
                 'min_preferable_age' => 'nullable|integer|between:16,100',
+                'description' => 'nullable|string',
+                'name' => 'string',
             ]
         );
 
