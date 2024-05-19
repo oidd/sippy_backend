@@ -31,6 +31,7 @@ Route::prefix('point')->middleware('auth:api')->group(function () {
     Route::get('/{id}', [PointController::class, 'showPoint']);
     Route::patch('/{id}', [PointController::class, 'updatePoint']);
     Route::delete('/{id}', [PointController::class, 'destroy']);
+    Route::get('/mypoint', [PointController::class, 'showMyPoint']);
 
     Route::post('/nearest', [PointController::class, 'showNearPoints']);
 
@@ -46,7 +47,6 @@ Route::prefix('request')->middleware('auth:api')->group(function () {
     Route::get('/decline/{id}', [RequestController::class, 'declineRequest']);
     Route::get('/received', [RequestController::class, 'showRequestsForMe']);
     Route::get('/sent', [RequestController::class, 'showMyRequests']);
-    Route::get('/mypoint', [RequestController::class, 'showMyPoint']);
 });
 
 Route::prefix('user')->middleware('auth:api')->group(function () {

@@ -88,9 +88,4 @@ class RequestController extends Controller
 
         return \App\Models\Request::where('point_id', $request->user()->point()->get()->id)->get();
     }
-
-    public function showMyPoint(Request $request)
-    {
-        return $request->user()->point()->first();
-    }
 }

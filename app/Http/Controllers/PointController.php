@@ -165,6 +165,11 @@ class PointController extends Controller
         return response()->json($points);
     }
 
+    public function showMyPoint(Request $request)
+    {
+        return $request->user()->point()->first();
+    }
+
     public function destroy($id, Request $request)
     {
         Gate::authorize('delete', Point::findOrFail($id));
