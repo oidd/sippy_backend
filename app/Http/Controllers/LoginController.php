@@ -56,7 +56,7 @@ class LoginController extends Controller
             [
                 'message' => 'bad login',
                 'errors' => ['login' => ['password and login doesn\'t match']]
-            ]
+            ], 400
         );
     }
 }
