@@ -21,6 +21,7 @@ return new class extends Migration
             VALUES ('pubs', 'пабы, рестораны'),
                    ('at_home', 'вечер дома'),
                    ('cinema', 'кино'),
+                   ('sports', 'спорт'),
                    ('sabantui', 'сабантуй')");
     }
 

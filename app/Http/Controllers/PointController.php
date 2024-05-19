@@ -18,7 +18,7 @@ class PointController extends Controller
             [
                 'latitude' => 'required|string',
                 'longitude' => 'required|string',
-                'category_id' => 'required|string|in:pubs,at_home,cinema,sabantui',
+                'category_id' => 'required|string|in:pubs,at_home,cinema,sabantui,sports',
                 'name' => 'required|string',
                 'description' => 'string',
                 'preferable_gender' => 'boolean',
@@ -64,7 +64,7 @@ class PointController extends Controller
             [
                 'latitude' => 'nullable|string',
                 'longitude' => 'nullable|string',
-                'category_id' => 'nullable|string|in:pubs,at_home,cinema,sabantui',
+                'category_id' => 'nullable|string|in:pubs,at_home,cinema,sabantui,sports',
             ]
         );
 
