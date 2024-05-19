@@ -30,9 +30,9 @@ class PointController extends Controller
 
         try {
             $point = Point::create([
-                'geom' => DB::select("SELECT ST_SetSRID(ST_MakePoint(?, ?), 4326)", [$inp['latitude'], $inp['longitude']])[0]->st_setsrid,
+                'geom' => DB::select("SELECT ST_SetSRID(ST_MakePoint(?, ?), 4326)", [$inp['longitude'], $inp['latitude']])[0]->st_setsrid,
                 'category_id' => $inp['category_id'],
-                'chunk_id' => Chunk::getChunkByCoordinates($inp['latitude'], $inp['longitude']),
+                'chunk_id' => Chunk::getChunkByCoordinates($inp['longitude'], $inp['latitude']),
                 'user_id' => $request->user()->id,
             ]);
 
