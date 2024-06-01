@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Point;
-use App\Models\Request;
+use App\Models\Call;
 use App\Models\User;
 use Illuminate\Database\Schema\Grammars\Grammar;
 use Illuminate\Support\Facades\Broadcast;
@@ -39,8 +39,8 @@ class AppServiceProvider extends ServiceProvider
             return $point->shouldShowToUser($user);
         });
 
-        Gate::define('decide-request', function (User $user, Request $request) {
-            return $user->id === $request->point()->get()->first()->user_id;
+        Gate::define('decide-request', function (User $user, Call $request) {
+            return $user->id === $request->point()->first()->user_id;
         });
     }
 }

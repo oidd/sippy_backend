@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\BroadcastsEvents;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,16 +25,20 @@ class Point extends Model
 
     protected $hidden = ['geom'];
 
-    public function getLongitudeAttribute()
+
+    protected function longitude(): Attribute
     {
-        return DB::select('select ST_X(?)', [$this->geom])[0]->st_x;
+        return Attribute::make(
+            get: fn () => DB::select('select ST_X(?)', [$this->geom])[0]->st_x,
+        );
     }
 
-    public function getLatitudeAttribute()
+    protected function latitude(): Attribute
     {
-        return DB::select('select ST_Y(?)', [$this->geom])[0]->st_y;
+        return Attribute::make(
+            get: fn () => DB::select('select ST_Y(?)', [$this->geom])[0]->st_y,
+        );
     }
-
 
     public function user(): BelongsTo
     {
@@ -52,12 +57,13 @@ class Point extends Model
 
     public function shouldShowToUser(User $user): bool
     {
+        if (!$this->description()->exists())
+            return false; // report this incident, because point cannot exist without its description
+
         $description = $this->description()->first();
 
         if ($this->user_id === $user->id)
             return true;
-
-//        dump([$description, $user]);
 
         if (($description->preferable_gender !== null) && ($user->gender != $description->preferable_gender))
             return false;
@@ -70,9 +76,4 @@ class Point extends Model
 
         return true;
     }
-
-//    public function broadcastOn(string $event): array
-//    {
-//        return
-//    }
 }

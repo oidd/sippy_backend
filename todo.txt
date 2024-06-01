@@ -1,0 +1,18 @@
+- postgresql functions instead of hardcoded lines like
+DB::select("SELECT ST_SetSRID(ST_MakePoint(?, ?), 4326)", [$inp['latitude'] ?? $p->latitude, $inp['longitude'] ?? $p->longitude])[0]->st_setsrid
+DB::select(
+            'SELECT chunks.id as id
+        FROM chunks
+        WHERE ST_Intersects(chunks.geom, ST_SetSRID(ST_MakePoint(?, ?), 4326));', [$longitude, $latitude])[0]->id
+and define them in database migration
+- rename and refactor RequestController. firstly, it's just confusing. secondly, because of it's naming laravel can't resolve related policy (IDK why exactly)
+- refactor nearest chunks resolving (right now it's horrible. its like O(n^8), dunno how to fix, but must do something)
+- implement file storage (avatar uploading), couldn't accomplish in two first days
+- refactor PointService, right now its just garbage
+- seeders and factories
+
+---broadcasting via websockets, laravel reverb
+- event when:
+    new point created (only if you can see this point)
+    updating point (only if you can see this point)
+    deleting point

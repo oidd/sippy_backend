@@ -5,23 +5,12 @@ namespace App\Service;
 use App\Models\Point;
 use App\Models\User;
 use Illuminate\Broadcasting\PrivateChannel;
+use Pusher\Pusher;
 
 class BroadcastingService
 {
-    public static function getUserPrivateChannel(User $user): PrivateChannel
+    public static function getOnlineUsers()
     {
-        return new PrivateChannel('private-' . $user->id);
-    }
-
-    public static function getPointsForUser(User $user): array
-    {
-        $points = Point::all();
-
-        $res = [];
-
-        foreach ($points as $i)
-        {
-
-        }
+        new Pusher();
     }
 }

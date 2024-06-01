@@ -22,6 +22,9 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => md5('password'),
+            'age' => fake()->numberBetween(18, 90),
+            'gender' => fake()->boolean(),
+            'about_me' => fake()->text(100),
         ];
     }
 

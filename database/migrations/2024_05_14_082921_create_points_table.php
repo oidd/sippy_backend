@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('points', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('chunk_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->unique();
             $table->addColumn('GEOMETRY_POINT', 'geom');
             $table->string('category_id');
             $table->timestamps();

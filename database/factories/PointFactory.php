@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Chunk;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,9 @@ class PointFactory extends Factory
                 $y = rand(25, 170);
 
                 $ch = Chunk::getChunkByCoordinates($x, $y);
+                if (empty($ch))
+                    throw new \Exception('');
+
             } catch (\Exception $e) {
                 continue;
             }
@@ -39,8 +43,8 @@ class PointFactory extends Factory
 
         return [
             'geom' => $this->geometryFromPoint($x, $y),
-            'is_house' => $this->faker->boolean(),
-            'user_id' => $this->faker->randomDigit()+1,
+            'category_id' => fake()->randomElement(DB::table('category')->select('id')->pluck('id')->toArray()),
+            'user_id' => User::factory(),
             'chunk_id' => Chunk::getChunkByCoordinates($x, $y),
         ];
     }

@@ -2,61 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\loginRequest;
+use App\Http\Requests\Auth\registerRequest;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public function register(Request $request)
+    public function register(registerRequest $request)
     {
-        $inp = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-            'gender' => 'required|boolean',
-            'age' => 'required|integer|between:16,100',
-            'about_me' => 'string'
-        ]);
-
-        return response()->json(User::create([
-            'name' => $inp['name'],
-            'email' => $inp['email'],
-            'password' => md5($inp['password']),
-            'gender' => $inp['gender'],
-            'age' => $inp['age'],
-            'about_me' => $inp['about_me'] ?? null,
-        ]));
+        return response()->json(User::create($request->validated()));
     }
 
-    public function login(Request $request)
+    public function login(loginRequest $request)
     {
-        $request->validate(
-            [
-                'email' => 'required|email',
-                'password' => 'required'
-            ]
-        );
+        $inp = $request->validated();
 
-        if (!empty($u = DB::table('users')->where('email', $request->input('email'))->first())
-            && md5($request->input('password')) == $u->password)
-        {
-            $payload = [
-                'user_id' => $u->id,
-            ];
+        if (! Auth::attempt([
+            'email' => $inp['email'],
+            'password' => md5($inp['password']),
+        ]))
+            throw new AuthenticationException('Bad credentials.');
 
-            return response()->json(JWT::encode($payload, env('AUTH_JWT_SECRET_KEY'), 'HS256'));
-        }
+        $payload = [
+            'user_id' => User::find(['email' => $inp['email']])->id,
+        ];
 
-        return response()->json(
-            [
-                'message' => 'bad login',
-                'errors' => ['login' => ['password and login doesn\'t match']]
-            ], 400
-        );
+        return response()->json(JWT::encode($payload, config('AUTH_JWT_SECRET_KEY'), 'HS256'));
     }
 }

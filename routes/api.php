@@ -3,58 +3,43 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PointController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RequestController;
+use App\Http\Controllers\CallController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
-Route::name('auth.')->group(function () {
-    Route::post('login', [LoginController::class, 'login'])->name('login');
-    Route::post('registration', [LoginController::class, 'register'])->name('registration');
+Route::prefix('auth')->group(function () {
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/registration', [LoginController::class, 'register']);
 });
 
-//Route::post('sendMessage', function (Request $request) {
-//    $request->validate(
-//        [
-//            'message' => 'required',
-//        ]
-//    );
-//
-//    \App\Events\MessageSent::dispatch($request->input('message'), $request->user());
-//
-//    return response()->json('check chat to know if message sent', 200);
-//
-//})->middleware(['auth:api']);
+Route::middleware('auth:api')->group(function () {
+    Route::prefix('point')->group(function () {
+        Route::post('/', [PointController::class, 'store']);
+        Route::get('/{point}', [PointController::class, 'showPoint']);
+        Route::patch('/{point}', [PointController::class, 'updatePoint']);
+        Route::delete('/{point}', [PointController::class, 'destroy']);
+        Route::get('/mypoint', [PointController::class, 'showMyPoint']);
+        Route::post('/nearest', [PointController::class, 'showNearPoints']);
 
-Route::prefix('point')->middleware('auth:api')->group(function () {
-    Route::post('/', [PointController::class, 'store']);
-    Route::get('/{id}', [PointController::class, 'showPoint']);
-    Route::patch('/{id}', [PointController::class, 'updatePoint']);
-    Route::delete('/{id}', [PointController::class, 'destroy']);
-    Route::get('/mypoint', [PointController::class, 'showMyPoint']);
+        Route::prefix('/description')->group(function () {
+            Route::get('/{point}', [PointController::class, 'showDescription']);
+            Route::patch('/{point}', [PointController::class, 'updatePointDescription']);
+        });
+    });
 
-    Route::post('/nearest', [PointController::class, 'showNearPoints']);
+    Route::prefix('call')->group(function () {
+        Route::get('/send/{point}', [CallController::class, 'sendCall']);
+        Route::get('/unsend/{point}', [CallController::class, 'unsendCall']);
+        Route::get('/approve/{call}', [CallController::class, 'approveCall']);
+        Route::get('/decline/{call}', [CallController::class, 'declineCall']);
+        Route::get('/received', [CallController::class, 'showCallsForMe']);
+        Route::get('/sent', [CallController::class, 'showMyCalls']);
+    });
 
-    Route::prefix('/description')->group(function () {
-        Route::get('/{id}', [PointController::class, 'showDescription']);
-        Route::patch('/{id}', [PointController::class, 'updatePointDescription']);
+    Route::prefix('user')->group(function () {
+        Route::get('/', [ProfileController::class, 'getMyProfile']);
+        Route::get('/{id}', [ProfileController::class, 'getProfile']);
+        Route::patch('/', [ProfileController::class, 'updateMyProfile']);
     });
 });
-
-Route::prefix('request')->middleware('auth:api')->group(function () {
-    Route::post('/send', [RequestController::class, 'sendRequest']);
-    Route::get('/approve/{id}', [RequestController::class, 'approveRequest']);
-    Route::get('/decline/{id}', [RequestController::class, 'declineRequest']);
-    Route::get('/received', [RequestController::class, 'showRequestsForMe']);
-    Route::get('/sent', [RequestController::class, 'showMyRequests']);
-});
-
-Route::prefix('user')->middleware('auth:api')->group(function () {
-    Route::get('/', [ProfileController::class, 'getMyProfile']);
-    Route::get('/{id}', [ProfileController::class, 'getProfile']);
-});
-//
-//Route::get('testingg', function (Request $request) {
-//    $p = Broadcast::pusher(app()['config']['broadcasting.connections.reverb']);
-//    dd($p->getPresenceUsers('presence-messagechannel'));
-//});

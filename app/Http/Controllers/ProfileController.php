@@ -2,40 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Profile\updateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
     public function getMyProfile(Request $request)
     {
-        return $request->user();
+        return response()->json($request->user());
     }
 
-    public function getProfile(int $id, Request $request)
+    public function getProfile(User $user)
     {
-        return User::find($id);
+        return response()->json($user);
     }
 
-    public function updateMyProfile(Request $request)
+    public function updateMyProfile(updateRequest $request)
     {
-        $inp = $request->validate([
-            'name' => 'string',
-            'about_me' => 'nullable|string'
-        ]);
-
-        $request->user()->update($inp);
-
-        return $request->user();
+        return response()->json($request->user()->update($request->validated()));
     }
-
-//    public function updateProfileAvatar(Request $request)
-//    {
-//        $inp = $request->validate([
-//            'photo' => 'file|required'
-//        ]);
-//
-//        Storage::disk('local')->put('avatars/' . $request->user()->id . '.jpg', $inp);
-//    }
 }
