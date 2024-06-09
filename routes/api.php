@@ -39,7 +39,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('user')->group(function () {
         Route::get('/', [ProfileController::class, 'getMyProfile']);
-        Route::get('/{id}', [ProfileController::class, 'getProfile']);
+        Route::get('/{user}', [ProfileController::class, 'getProfile']);
         Route::patch('/', [ProfileController::class, 'updateMyProfile']);
     });
 });

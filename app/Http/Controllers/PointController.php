@@ -6,7 +6,6 @@ use App\Http\Requests\Point\nearestRequest;
 use App\Http\Requests\Point\storeRequest;
 use App\Http\Requests\Point\updateRequest;
 use App\Models\Point;
-use App\Models\Points_description;
 use App\Service\PointService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;

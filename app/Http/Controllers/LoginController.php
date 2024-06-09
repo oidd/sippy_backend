@@ -27,9 +27,9 @@ class LoginController extends Controller
             throw new AuthenticationException('Bad credentials.');
 
         $payload = [
-            'user_id' => User::find(['email' => $inp['email']])->id,
+            'user_id' => User::where('email', $inp['email'])->first()->id,
         ];
 
-        return response()->json(JWT::encode($payload, config('AUTH_JWT_SECRET_KEY'), 'HS256'));
+        return response()->json(JWT::encode($payload, config('jwt.secret'), 'HS256'));
     }
 }
